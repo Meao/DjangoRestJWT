@@ -28,7 +28,7 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/users/', views.ListUsers.as_view()),
     path('', views.UserAPI.as_view()),
-    path('<int:id>', views.UserRetrieveUpdateDestroyAPI.as_view()),
+    path('<int:pk>', views.UserRetrieveUpdateDestroyAPI.as_view()),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 

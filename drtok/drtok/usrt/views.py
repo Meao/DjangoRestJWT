@@ -29,7 +29,7 @@ class ListUsers(ListAPIView):
 class UserAPI(ListCreateAPIView):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = serializers.WriteOnlyUserSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -44,10 +44,10 @@ class UserAPI(ListCreateAPIView):
 
 class UserRetrieveUpdateDestroyAPI(RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.WriteOnlyUserSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return User.objects.filter(id=self.kwargs.get('id', None))
+        return User.objects.filter(id=self.kwargs.get('pk', None))
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)

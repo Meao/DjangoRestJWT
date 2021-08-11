@@ -1,0 +1,14 @@
+API ENDPOINTS
+Below are described the REST endpoints available
+
+User Api List Users for admin (test credentials: admin password123) access: 
+read with token 
+http://127.0.0.1:8000/api/users/
+
+User Api for user access: create, read
+http://127.0.0.1:8000/
+
+User Api Token Obtain Pair admin access: create
+http://127.0.0.1:8000/api/token/
+
+This project is not meant to run on prod, Secret Key is exposed.

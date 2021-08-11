@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from .models import User,Profile
 from rest_framework import serializers
 
 
@@ -11,12 +12,12 @@ from rest_framework import serializers
     #     user = User.objects.create_user(validated_data['username'], validated_data["password"])
     #     return user
 
-class ReadOnlyUserSerializer(serializers.HyperlinkedModelSerializer):
+class ReadOnlyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','username','first_name','last_name','password','is_active','last_login','is_superuser']
 
-class WriteOnlyUserSerializer(serializers.HyperlinkedModelSerializer):
+class WriteOnlyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username','first_name','last_name','password','is_active']

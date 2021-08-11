@@ -1,9 +1,0 @@
-API ENDPOINTS
-Below are described the REST endpoints available
-
-User Api List Users for admin access
-http://127.0.0.1:8000/api/users/
-
-User Api for user access: create, read
-http://127.0.0.1:8000/
-
