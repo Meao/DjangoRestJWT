@@ -1,14 +1,26 @@
 API ENDPOINTS
-Below are described the REST endpoints available
+Below are described the endpoints available
 
-User Api List Users for admin (test credentials: admin password123) access: 
-read with token 
-http://127.0.0.1:8000/api/users/
+Django admin access: 
+http://127.0.0.1:8000/admin/
 
-User Api for user access: create, read
-http://127.0.0.1:8000/
+Api for user access: register
+http://127.0.0.1:8000/accounts/register/
+Api for user access: login
+http://127.0.0.1:8000/accounts/login/
+Api for user access: logout
+http://127.0.0.1:8000/accounts/logout/
 
-User Api Token Obtain Pair admin access: create
-http://127.0.0.1:8000/api/token/
+Api Profile: 'GET','PATCH','DELETE' access
+http://127.0.0.1:8000/accounts/profile/
+
+Token Refresh
+Takes a refresh type JSON web token and returns an access type JSON web
+token if the refresh token is valid.
+http://127.0.0.1:8000/token/refresh/
+Token Verify
+Takes a token and indicates if it is valid. This view provides no
+information about a token's fitness for a particular use.
+http://127.0.0.1:8000/token/verify/
 
 This project is not meant to run on prod, Secret Key is exposed.

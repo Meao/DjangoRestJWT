@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from .models import CustomUser
 from .serializers import ReadOnlyUserSerializer, WriteOnlyUserSerializer
 
 @api_view(['GET','POST'])
@@ -21,10 +21,10 @@ def register(request):
             password = request.data['password']
             password2 = request.data['confirm']
             if password == password2:
-                if User.objects.filter(username=username).exists():
+                if CustomUser.objects.filter(username=username).exists():
                     return Response('User with same username already exists',status=status.HTTP_403_FORBIDDEN)
                 else:
-                    user = User.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name, is_active=is_active)
+                    user = CustomUser.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name, is_active=is_active)
                     user.save()
                     return Response('User Registered successfully',status=status.HTTP_201_CREATED)
             else:
@@ -38,7 +38,7 @@ def register(request):
 @permission_classes([IsAuthenticated])
 def profile(request):
     try:
-        user = User.objects.get(id=request.user.id)
+        user = CustomUser.objects.get(id=request.user.id)
         if request.method == 'GET':
             serializer = ReadOnlyUserSerializer(user)
             return Response(serializer.data,status=status.HTTP_200_OK)
@@ -65,7 +65,7 @@ def profile(request):
             else:
                 return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
             
-    except User.DoesNotExist:
+    except CustomUser.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET','POST'])
@@ -76,7 +76,7 @@ def login(request):
         username = request.data['username']
         password = request.data['password']
         
-        if User.objects.filter(username=username).exists()==False:
+        if CustomUser.objects.filter(username=username).exists()==False:
             return Response('User does not exist',status=status.HTTP_404_NOT_FOUND)        
         else:
             user = authenticate(username=username, password=password) 

@@ -1,5 +1,5 @@
 # from django.contrib.auth.models import User
-from .models import User,Profile
+from .models import CustomUser
 from rest_framework import serializers
 
 
@@ -14,10 +14,10 @@ from rest_framework import serializers
 
 class ReadOnlyUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id','username','first_name','last_name','password','is_active','last_login','is_superuser']
+        model = CustomUser
+        fields = ['username','first_name','last_name','password','is_active','last_login','is_superuser']
 
 class WriteOnlyUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username','first_name','last_name','password','is_active']

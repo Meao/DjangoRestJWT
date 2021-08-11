@@ -3,40 +3,42 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.contrib.auth import password_validation
+from django.utils import timezone
 import jwt
         
-class UserManager(BaseUserManager):
+class CustomUserManager(BaseUserManager):
     def create_user(self, username, password=None, is_active=True):
         """
         Creates and saves a User.
         """
         user = self.model(username=username, is_active=is_active)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, password, is_active=True):
+    def create_superuser(self, username, is_active=True, password=None):
         """
         Creates and saves a superuser.
         """
         if password is None:
             raise TypeError('Superusers must have a password.')
-        user = self.create_user(username, password, is_active)
+        user = self.create_user(username=username, password=password, is_active=is_active)
         user.is_superuser = True
-        user.save()
+        user.save(using=self._db)
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     # unique username.
     username = models.EmailField(max_length=150, unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=150)
     # instead of deleting an account.
     is_active = models.BooleanField(default=True)
-    last_login = models.DateTimeField(auto_now_add=True, auto_now=True)
+    last_login = models.DateTimeField(default=timezone.now)
+    is_superuser = models.BooleanField(default=False)
 
-    objects = UserManager()
+    objects = CustomUserManager()
     # USERNAME_FIELD sets username used to log in.
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = [is_active] # Password is required by default.
@@ -52,11 +54,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         # The user identified 
         return self.username
-
-    @property
-    def is_superuser(self):
-        "Is the user an admin member?"
-        return self.is_superuser
 
     @property
     def token(self):
@@ -75,8 +72,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         return token.decode('utf-8')
 
 
-# class Profile(models.Model):
-#     user = models.OneToOneField(User,on_delete=models.CASCADE,default=1,related_name='profile')
+class Profile(models.Model):
+    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE,default=1,related_name='profile')
 
-#     class Meta:
-#         db_table='Profile'
+    class Meta:
+        db_table='Profile'
