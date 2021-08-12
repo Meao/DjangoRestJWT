@@ -6,29 +6,29 @@ from django.contrib.auth import password_validation
 from django.utils import timezone
 import jwt
         
-class CustomUserManager(BaseUserManager):
-    def create_user(self, username, password=None, is_active=True):
+class CustomMadeUserManager(BaseUserManager):
+    def create_user(self, username, is_active, password=None):
         """
         Creates and saves a User.
         """
-        user = self.model(username=username, is_active=is_active)
+        user = self.model(username=username, is_active=is_active,)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, is_active=True, password=None):
+    def create_superuser(self, username, is_active, password=None):
         """
         Creates and saves a superuser.
         """
         if password is None:
             raise TypeError('Superusers must have a password.')
-        user = self.create_user(username=username, password=password, is_active=is_active)
+        user = self.create_user(username, password=password, is_active=is_active,)
         user.is_superuser = True
         user.save(using=self._db)
         return user
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class CustomMadeUser(AbstractBaseUser, PermissionsMixin):
     # unique username.
     username = models.EmailField(max_length=150, unique=True)
     first_name = models.CharField(max_length=30)
@@ -38,7 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(default=timezone.now)
     is_superuser = models.BooleanField(default=False)
 
-    objects = CustomUserManager()
+    objects = CustomMadeUserManager()
     # USERNAME_FIELD sets username used to log in.
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = [is_active] # Password is required by default.
@@ -72,8 +72,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return token.decode('utf-8')
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(CustomUser,on_delete=models.CASCADE,default=1,related_name='profile')
+# class Profile(models.Model):
+#     user = models.OneToOneField(CustomMadeUser,on_delete=models.CASCADE,default=1,related_name='profile')
 
-    class Meta:
-        db_table='Profile'
+#     class Meta:
+#         db_table='Profile'
